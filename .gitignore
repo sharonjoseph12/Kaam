@@ -48,3 +48,9 @@ htmlcov/
 *.swo
 *~
 Thumbs.db
+
+# Node.js / React Dashboard
+node_modules/
+dist/
+*.log
+*.local

@@ -1,1 +1,0 @@
-"""External API stubs package."""

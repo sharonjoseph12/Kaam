@@ -1,1 +1,0 @@
-"""KAAM Finance Backend."""
