@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
+    "crypto-js": "^4.2.0",
     "jspdf": "^4.2.1",
+    "jspdf-invoice-template": "^1.5.1",
     "lucide-react": "^1.18.0",
     "qrcode": "^1.5.4",
     "qrcode.react": "^4.2.0",

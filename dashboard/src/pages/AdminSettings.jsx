@@ -62,6 +62,12 @@ export default function AdminSettings() {
           </div>
           
           <form onSubmit={handleSave}>
+            <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
+              Contractor Score Penalty Factor
+            </label>
+            <input type="number" defaultValue="1.5" step="0.1" className="input-field" />
+          </div>
             <div className="form-group">
               <label className="form-label">Current Password</label>
               <input type="password" className="form-input" placeholder="••••••••" />

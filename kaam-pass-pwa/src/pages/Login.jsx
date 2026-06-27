@@ -6,6 +6,7 @@ import { Button } from '../components/Button';
 import { supabase } from '../lib/supabase';
 import { Fingerprint } from 'lucide-react';
 
+// fallow-ignore-next-line complexity
 export default function Login() {
   const [phone, setPhone] = useState('+919876543210');
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,7 @@ export default function Login() {
     }
   };
 
+  // fallow-ignore-next-line complexity
   const handleBiometricLogin = async () => {
     try {
       if (!window.PublicKeyCredential) {

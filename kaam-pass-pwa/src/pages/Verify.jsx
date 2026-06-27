@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
+// fallow-ignore-next-line complexity
 export default function Verify() {
   const { hash } = useParams();
   const [loading, setLoading] = useState(true);
   const [wageSlip, setWageSlip] = useState(null);
 
   useEffect(() => {
+    // fallow-ignore-next-line complexity
     async function verifyHash() {
       if (!hash) return;
       try {

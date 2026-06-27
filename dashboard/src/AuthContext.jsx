@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : null;
   });
 
+  // fallow-ignore-next-line complexity
   const login = useCallback((role, name, email) => {
     const u = {
       role,

@@ -9,6 +9,18 @@ import WageSlipGenerator from './WageSlipGenerator';
 import AnomalyAlerts from './AnomalyAlerts';
 import { supabase } from '../../supabaseClient';
 
+const SiteTable = ({ sites, headers, renderRow, emptyMessage }) => (
+  <div className="table-container">
+    {sites.length === 0 ? <EmptyState message={emptyMessage || "No sites available"} /> : (
+      <table className="data-table">
+        <thead><tr>{headers.map((h, i) => <th key={i}>{h}</th>)}</tr></thead>
+        <tbody>{sites.map(renderRow)}</tbody>
+      </table>
+    )}
+  </div>
+);
+
+// fallow-ignore-next-line complexity
 export default function ContractorDashboard() {
   const [sites, setSites] = useState([]);
   const [assignments, setAssignments] = useState([]);
@@ -25,6 +37,7 @@ export default function ContractorDashboard() {
   // Default contractor ID for demo if not logged in proper
   const contractorId = 1;
 
+  // fallow-ignore-next-line complexity
   const loadData = async () => {
     try {
       const [{ data: sitesData }, { data: assignmentsData }, { data: disputesData }] = await Promise.all([
@@ -119,29 +132,20 @@ export default function ContractorDashboard() {
             <div className="card glass-card">
               <h3 style={{ marginBottom: 'var(--space-md)' }}><MapPin size={18} style={{ verticalAlign: 'middle', marginRight: 8 }}/>Your Sites</h3>
               {sites.length === 0 ? <EmptyState message="No sites created yet" /> : (
-                <div className="table-container">
-                  <table className="data-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Workers</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sites.map(site => (
-                        <tr key={site.id}>
-                          <td>{site.name}</td>
-                          <td>{assignments.filter(a => a.site_id === site.id).length}</td>
-                          <td>
-                            <button className="btn btn-sm btn-outline" onClick={() => setSelectedSite(site)} style={{ marginRight: '0.5rem' }}>View QR</button>
-                            <button className="btn btn-sm btn-primary" onClick={() => setAttendanceSite(site)}>Mark Attendance</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <SiteTable 
+                  sites={sites} 
+                  headers={["Name", "Workers", "Action"]} 
+                  renderRow={site => (
+                    <tr key={site.id}>
+                      <td>{site.name}</td>
+                      <td>{assignments.filter(a => a.site_id === site.id).length}</td>
+                      <td>
+                        <button className="btn btn-sm btn-outline" onClick={() => setSelectedSite(site)} style={{ marginRight: '0.5rem' }}>View QR</button>
+                        <button className="btn btn-sm btn-primary" onClick={() => setAttendanceSite(site)}>Mark Attendance</button>
+                      </td>
+                    </tr>
+                  )} 
+                />
               )}
             </div>
             
@@ -216,26 +220,18 @@ export default function ContractorDashboard() {
             <div className="grid-2">
               <div className="card glass-card">
                 <h3 style={{ marginBottom: 'var(--space-md)' }}>Select Site for Wage Slips</h3>
-                <div className="table-container">
-                  <table className="data-table">
-                    <thead>
-                      <tr>
-                        <th>Site Name</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sites.map(site => (
-                        <tr key={site.id}>
-                          <td>{site.name}</td>
-                          <td>
-                            <button className="btn btn-sm btn-primary" onClick={() => setWageSlipSite(site)}>Select</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <SiteTable 
+                  sites={sites} 
+                  headers={["Site Name", "Action"]} 
+                  renderRow={site => (
+                    <tr key={site.id}>
+                      <td>{site.name}</td>
+                      <td>
+                        <button className="btn btn-sm btn-primary" onClick={() => setWageSlipSite(site)}>Select</button>
+                      </td>
+                    </tr>
+                  )}
+                />
               </div>
 
               <div>

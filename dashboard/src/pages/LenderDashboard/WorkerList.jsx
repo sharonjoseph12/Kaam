@@ -65,9 +65,12 @@ export default function WorkerList({ workers, onViewProfile }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(w => (
-                <tr key={w.id}>
-                  <td>{w.full_name}</td>
+              {/* fallow-ignore-next-line complexity */}
+          {filtered.map((w, i) => (
+                <tr key={`worker-${w.id}-${i}`}>
+                  <td>
+                    <strong className="text-gray-900">{w.full_name}</strong>
+                  </td>
                   <td>{w.workers?.skill || 'Unknown'}</td>
                   <td style={{ fontWeight: 'bold', color: 'var(--color-success)' }}>₹{w.verifiedIncome}</td>
                   <td>

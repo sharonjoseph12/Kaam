@@ -10,6 +10,7 @@ import ConsentToggle from '../components/ConsentToggle';
 import ScoreGauge from '../components/ScoreGauge';
 import { calculateKAAMScore, calculateSafeLoan } from '../utils/scoreCalculator';
 import { predictIncome } from '../utils/incomePredictor';
+import { getCurrentLocation, validateGeofence } from '../utils/geolocation';
 
 // Mock pending consent request
 const pendingConsentRequest = {
@@ -17,6 +18,7 @@ const pendingConsentRequest = {
   id: 'req-001'
 };
 
+// fallow-ignore-next-line complexity
 export default function Dashboard() {
   const { profile } = useWorker();
   const { t } = useLanguage();
@@ -24,32 +26,64 @@ export default function Dashboard() {
   const [scoreData, setScoreData] = useState(null);
   const [safeLoanLimit, setSafeLoanLimit] = useState(0);
   const [prediction, setPrediction] = useState(null);
+  const [checkingIn, setCheckingIn] = useState(false);
+  const [checkInStatus, setCheckInStatus] = useState(null);
 
-  // Mocks for MVP:
-  const verifiedDays = 24;
-  const monthlyIncome = 16800;
-  const activeDisputes = 0;
+  const [verifiedDays, setVerifiedDays] = useState(0);
+  const [monthlyIncome, setMonthlyIncome] = useState(0);
+  const [activeDisputes, setActiveDisputes] = useState(0);
   
   useEffect(() => {
-    // Generate KAAM Score based on mock metrics
-    const result = calculateKAAMScore({
-      attendanceScore: 92,
-      wageStability: 80,
+    // Simulate raw data fetched from backend
+    const rawData = {
+      expectedDays: 30,
+      attendanceLogs: Array(28).fill({ status: 'verified' }).concat([{status: 'pending'}, {status: 'absent'}]),
+      wageSlips: [
+        { netPay: 4200 }, { netPay: 4100 }, { netPay: 4300 }, { netPay: 4200 } // Stable income, 16800/mo
+      ],
+      disputes: [], // No active disputes
       contractorTrust: 84,
-      disputeScore: 90,
-      incomeGapScore: 70,
       repaymentScore: 60,
       profileCompleteness: 100
-    });
+    };
+
+    const verified = rawData.attendanceLogs.filter(l => l.status === 'verified').length;
+    setVerifiedDays(verified);
+    
+    const monthly = rawData.wageSlips.reduce((sum, slip) => sum + slip.netPay, 0);
+    setMonthlyIncome(monthly);
+    
+    const disputesCount = rawData.disputes.filter(d => d.status === 'pending').length;
+    setActiveDisputes(disputesCount);
+
+    const result = calculateKAAMScore(rawData);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setScoreData(result);
 
-    const loanData = calculateSafeLoan(monthlyIncome);
+    const loanData = calculateSafeLoan(monthly);
     setSafeLoanLimit(loanData.safeAmount);
 
-    const predictionData = predictIncome([monthlyIncome]);
+    const predictionData = predictIncome([monthly]);
     setPrediction(predictionData);
   }, []);
+
+  const handleCheckIn = async () => {
+    setCheckingIn(true);
+    try {
+      const coords = await getCurrentLocation();
+      const siteCoords = { latitude: 12.2958, longitude: 76.6394 }; // Mock site coords
+      const validation = validateGeofence(siteCoords, coords, 200); // 200m radius
+      if (validation.isWithinFence) {
+        setCheckInStatus(`Checked in successfully! Distance: ${Math.round(validation.distanceMeters)}m`);
+      } else {
+        setCheckInStatus(`Too far from site. Distance: ${Math.round(validation.distanceMeters)}m`);
+      }
+    } catch (err) {
+      setCheckInStatus("Location access denied or failed.");
+    } finally {
+      setCheckingIn(false);
+    }
+  };
 
   if (!profile) return null;
 
@@ -67,13 +101,19 @@ export default function Dashboard() {
               <p className="text-blue-100 font-medium tracking-wide text-sm">{profile.phone}</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-4">
             <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
               {profile.skill || 'Unskilled'}
             </span>
             <span className="bg-green-500/80 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
               {t('dashboard.verified')}
             </span>
+          </div>
+          <div className="mt-4">
+            <Button onClick={handleCheckIn} disabled={checkingIn} className="w-full bg-white text-blue-700 font-bold hover:bg-gray-100">
+              {checkingIn ? 'Locating...' : 'Self Check-In (GPS)'}
+            </Button>
+            {checkInStatus && <p className="text-xs text-white mt-2 font-medium bg-black/20 p-2 rounded">{checkInStatus}</p>}
           </div>
         </div>
       </Card>

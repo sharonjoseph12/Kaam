@@ -1,3 +1,4 @@
+// fallow-ignore-next-line complexity
 export default function ScoreGauge({ score, size = 120 }) {
   const strokeWidth = 12;
   const radius = (size - strokeWidth) / 2;

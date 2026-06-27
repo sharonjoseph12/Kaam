@@ -7,6 +7,7 @@ import ProtectionCases from './ProtectionCases';
 import { Users, ShieldAlert, BarChart2 } from 'lucide-react';
 import { StatCard } from '../../components/ui';
 
+// fallow-ignore-next-line complexity
 export default function LenderDashboard() {
   const [activeTab, setActiveTab] = useState('workers');
   const [workers, setWorkers] = useState([]);

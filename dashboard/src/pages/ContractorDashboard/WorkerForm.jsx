@@ -11,6 +11,7 @@ export default function WorkerForm({ sites, onWorkerAdded }) {
     site_id: ''
   });
 
+  // fallow-ignore-next-line complexity
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

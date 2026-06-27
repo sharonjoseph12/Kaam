@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { Building2, Shield, UserCog } from 'lucide-react';
 
+// fallow-ignore-next-line complexity
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();

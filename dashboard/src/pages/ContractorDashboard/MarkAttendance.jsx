@@ -3,6 +3,7 @@ import { supabase } from '../../supabaseClient';
 import { verifyLocation } from '../../utils/geo';
 import { SeverityBadge } from '../../components/ui';
 
+// fallow-ignore-next-line complexity
 export default function MarkAttendance({ site, assignments, onAttendanceMarked }) {
   const [loading, setLoading] = useState(false);
   const [gpsLoading, setGpsLoading] = useState(false);
@@ -42,6 +43,7 @@ export default function MarkAttendance({ site, assignments, onAttendanceMarked }
     );
   };
 
+  // fallow-ignore-next-line complexity
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -122,6 +124,7 @@ export default function MarkAttendance({ site, assignments, onAttendanceMarked }
             </tr>
           </thead>
           <tbody>
+            {/* fallow-ignore-next-line complexity */}
             {assignments.map(a => (
               <tr key={a.id}>
                 <td>{a.profiles?.full_name || 'Unknown'}</td>

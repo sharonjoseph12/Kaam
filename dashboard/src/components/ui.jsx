@@ -53,7 +53,7 @@ export function ScoreRing({ score, size = 56, strokeWidth = 4 }) {
   );
 }
 
-export function Badge({ variant = 'neutral', children }) {
+function Badge({ variant = 'neutral', children }) {
   return <span className={`badge badge--${variant}`}>{children}</span>;
 }
 

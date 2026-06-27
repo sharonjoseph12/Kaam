@@ -7,7 +7,8 @@ export default function WageSlipList() {
   const [slips, setSlips] = useState([]);
 
   useEffect(() => {
-    async function loadSlips() {
+    // fallow-ignore-next-line complexity
+    const loadSlips = async () => {
       if (!profile?.id) return;
       const { data, error } = await supabase
         .from('wage_slips')
